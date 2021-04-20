@@ -1,0 +1,24 @@
+body {
+  background-color: #1e2836;
+  min-height: 100vh;
+  height: 100vh;
+  overflow-y: hidden;
+}
+
+html {
+  min-height: 100vh;
+  height: 100vh;
+}
+
+#__next {
+  min-height: 100vh;
+  height: 100vh;
+}
+
+.calendar-optimal {
+  background-color: #512da8 !important;
+}
+
+.calendar-editing {
+  background-color: #d84315 !important;
+}

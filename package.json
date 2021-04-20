@@ -1,0 +1,26 @@
+{
+  "name": "@cable/scheduler-core",
+  "private": true,
+  "devDependencies": {
+    "git-branch-is": "^4.0.0",
+    "husky": "^4.3.7",
+    "lerna": "^3.22.1",
+    "prettier": "^2.2.1"
+  },
+  "scripts": {
+    "dev": "lerna run --parallel dev",
+    "build": "lerna run --parallel build",
+    "serve": "lerna run --parallel serve",
+    "deploy": "lerna run --parallel deploy",
+    "lint": "lerna run --parallel lint",
+    "check": "lerna run --parallel check",
+    "postinstall": "lerna bootstrap"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "git-branch-is -r \"^(?!main).*$\"",
+      "pre-push": "npm run check",
+      "post-merge": "npm install"
+    }
+  }
+}

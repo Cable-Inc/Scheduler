@@ -1,0 +1,34 @@
+type Query {
+  ping: String!
+  randomNumber: Float!
+  getCompanyFromName(companyName: String!): Company
+  getCalendar(id: String!): Calendar!
+  getOptimalTime(id: String!): [TimeEntry!]!
+  getCalendarContributors(id: String!): [String!]!
+}
+
+type Company {
+  name: String!
+  employee_count: Int!
+}
+
+type Calendar {
+  users: [User!]!
+  calculated: [TimeEntry!]!
+}
+
+type User {
+  username: String!
+  times: [TimeEntry!]!
+}
+
+type TimeEntry {
+  start: String!
+  end: String!
+}
+
+type Mutation {
+  newCalendar: ID!
+  newCalendarUser(id: String!, username: String!): Calendar!
+  updateCalendarUser(id: String!, username: String!, times: [[String!]!]!): Calendar!
+}

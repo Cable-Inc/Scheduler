@@ -1,0 +1,50 @@
+.tooltip {
+    padding: 0;
+}
+.tooltip button {
+    padding: 0.3125rem 0.5625rem;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+}
+.tooltip button .icon {
+    filter: invert(100%);
+}
+.buttons-wrapper {
+    display: flex;
+    align-items: center;
+    background: #fff8dc;
+    height: 50px;
+    overflow-y: auto;
+}
+.buttons-wrapper > * {
+    margin: 0 5px;
+    flex-shrink: 0;
+}
+.buttons-wrapper button {
+    appearance: none;
+    border: 1px solid #b0b0b0;
+    background: #e8e8e8;
+    border-radius: 2px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.buttons-wrapper > :last-child {
+    margin-left: auto;
+}
+.buttons-wrapper label {
+    display: flex;
+    align-items: center;
+    margin: 0 15px;
+}
+.buttons-wrapper label select {
+    margin: 0 10px;
+}
