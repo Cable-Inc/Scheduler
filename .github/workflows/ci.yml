@@ -1,4 +1,4 @@
-name: landlord-ci
+name: scheduler-ci
 
 on:
   push:

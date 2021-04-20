@@ -1,6 +1,5 @@
 {
   "projects": {
-    "default": "cable-landlord",
-    "staging": "cable-scheduler"
+    "default": "cable-scheduler"
   }
 }
