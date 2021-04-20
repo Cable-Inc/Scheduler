@@ -33,7 +33,7 @@
   },
   "hosting": [
     {
-      "site": "cable-schedule",
+      "site": "cable-scheduler",
       "public": "public/",
       "cleanUrls": true,
       "rewrites": [

@@ -29,6 +29,7 @@
     "check:env": "ts-node --project ./scripts/tsconfig.json ./scripts/CheckEnv.ts",
     "start": "next start",
     "deploy": "cross-env NODE_ENV=production firebase deploy --only functions,hosting --token",
+    "deploy:skip-build": "cross-env NODE_ENV=production firebase deploy --only functions,hosting",
     "predeploy": "rimraf dist/ && npm run build",
     "dev:firestore": "run-p dev:firestore-emulators dev:firestore-import",
     "dev:firestore-emulators": "firebase emulators:start --only firestore",
