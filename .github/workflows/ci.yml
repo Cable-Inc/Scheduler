@@ -40,7 +40,7 @@ jobs:
           FIREBASE_PROJECT_ID: "cable-scheduler"
           NEXT_PUBLIC_API_ENDPOINT_URL: "https://cable-scheduler.web.app/api/graphql"
           FIRESTORE_EMULATOR_HOST: null
-          directory: ./packages/app/
+          directory: "packages/app" 
           file_name: .env
 
       - name: Deploy to Firebase
