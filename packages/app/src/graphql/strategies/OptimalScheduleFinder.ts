@@ -1,7 +1,6 @@
 import { TimeEntry, User } from "../types/Calendar";
-import { addDays, addMinutes } from "date-fns";
+import { addDays, addMinutes, differenceInMinutes, formatISO9075 } from "date-fns";
 
-const RESOLUTION = 30;
 const START_REFERENCE = new Date("2019-2-4 00:00");
 
 export default class OptimalScheduleFinder {
@@ -41,26 +40,18 @@ export default class OptimalScheduleFinder {
         }
       }
     }
-
     return solution;
   }
 
   private dateFromIndex(day: number, slot: number): Date {
     const date = new Date(START_REFERENCE);
-    const addedDays = addDays(date, day + 3);
+    const addedDays = addDays(date, day);
     const addedMins = addMinutes(addedDays, slot * 30);
     return addedMins;
   }
 
   private timeFormat(date: Date) {
-    const [years, months, days, hours, minutes] = [
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-    ];
-    return `${years}-${months}-${days} ${hours}:${minutes}`;
+    return formatISO9075(date);
   }
 
   private findOverlaps(): { overlaps: number[][]; max: number } {
@@ -95,7 +86,6 @@ export default class OptimalScheduleFinder {
         dayArray[i] = 1;
       }
     }
-
     return form;
   }
 
@@ -106,9 +96,8 @@ export default class OptimalScheduleFinder {
   }
 
   private minuteDeltaFromRef(date: Date): number {
-    const diff = (date.getTime() - START_REFERENCE.getTime()) / 1000;
-    const minuteDiff = diff / 60;
-    return Math.abs(Math.round(minuteDiff));
+    const delta = differenceInMinutes(date, START_REFERENCE);
+    return delta;
   }
 
   private allocateSolutionSpace(): number[][] {
