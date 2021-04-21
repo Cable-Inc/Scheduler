@@ -1,4 +1,4 @@
-# cable-landlord
+# Cable Scheduler
 
 Use `lerna create xyz` to create a new package
 
@@ -17,13 +17,4 @@ outside of the project). Make a `packages/app/.env` and copy everything from
 # starting
 `npm run dev` to run the development server. This will start storybook and the nextjs local website.
 
-`npm run serve` will run a production build locally. Isn't really a reason to use this right now until firebase emulators are setup.
-
-You need to manually open localhost:3000 to view
-# Branches
-
-DO NOT push to main ever.
-
-PREFERABLY do not directly push to development. Branch OFF OF development. Make
-pull requests from YOUR FEATURE BRANCH to DEVELOPMENT.
 
