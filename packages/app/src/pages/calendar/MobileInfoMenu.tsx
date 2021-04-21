@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
@@ -58,7 +60,14 @@ const MobileInfoMenu: React.FC<MobileInfoMenuProps> = ({ isOpen, setOpen, id, sw
 
   return (
     <div>
-      <Dialog fullScreen open={isOpen} onClose={() => setOpen(false)} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={isOpen}
+        onClose={() => setOpen(false)}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        TransitionComponent={Transition}
+      >
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={() => setOpen(false)} aria-label="close">
