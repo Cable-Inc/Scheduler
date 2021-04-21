@@ -32,15 +32,14 @@ jobs:
       - name: Run NPM Build
         working-directory: ./packages/app
         run: npm run build
-
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.1
+      - name: Create Dotenv File
+        uses: actually-colab/github-action-create-env-file@v2.3
         with:
           GOOGLE_APPLICATION_CREDENTIALS: null
           FIREBASE_PROJECT_ID: "cable-scheduler"
           NEXT_PUBLIC_API_ENDPOINT_URL: "https://cable-scheduler.web.app/api/graphql"
           FIRESTORE_EMULATOR_HOST: null
-          directory: ./packages/app/
+          directory: ./packages/app
           file_name: .env
 
       - name: Deploy to Firebase
