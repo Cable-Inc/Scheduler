@@ -35,10 +35,8 @@ jobs:
       - name: Create Dotenv File
         uses: actually-colab/github-action-create-env-file@v2.3
         with:
-          GOOGLE_APPLICATION_CREDENTIALS: null
           FIREBASE_PROJECT_ID: "cable-scheduler"
-          NEXT_PUBLIC_API_ENDPOINT_URL: "https://cable-scheduler.web.app/api/graphql"
-          FIRESTORE_EMULATOR_HOST: null
+          NEXT_PUBLIC_API_ENDPOINT_URL: "https://us-central1-cable-scheduler.cloudfunctions.net/nextjs-server/api/graphql"
           directory: ./packages/app
           file_name: .env
 
