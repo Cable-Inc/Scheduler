@@ -17,6 +17,10 @@ const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message));
 });
 
+const uri =
+  process.env.NEXT_PUBLIC_API_ENDPOINT_URL ??
+  "https://us-central1-cable-scheduler.cloudfunctions.net/nextjs-server/api/graphql";
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
@@ -24,7 +28,7 @@ function createApolloClient() {
       apolloLogger,
       (errorLink as unknown) as ApolloLink,
       new HttpLink({
-        uri: process.env.NEXT_PUBLIC_API_ENDPOINT_URL, // Server URL (must be absolute)
+        uri, // Server URL (must be absolute)
         credentials: "same-origin", // Additional fetch() options like `credentials` or `headers`
       }),
     ]),

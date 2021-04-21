@@ -32,13 +32,6 @@ jobs:
       - name: Run NPM Build
         working-directory: ./packages/app
         run: npm run build
-      - name: Create Dotenv File
-        uses: actually-colab/github-action-create-env-file@v2.3
-        with:
-          FIREBASE_PROJECT_ID: "cable-scheduler"
-          NEXT_PUBLIC_API_ENDPOINT_URL: "https://us-central1-cable-scheduler.cloudfunctions.net/nextjs-server/api/graphql"
-          directory: ./packages/app
-          file_name: .env
 
       - name: Deploy to Firebase
         if: github.event_name == 'push'
