@@ -1,18 +1,15 @@
+html {
+  height: 100%; /* note #1 */
+}
 body {
   background-color: #1e2836;
-  min-height: 100vh;
-  height: 100vh;
-  overflow-y: hidden;
-}
-
-html {
-  min-height: 100vh;
-  height: 100vh;
+  height: 100%; /* note #1 */
+  margin: 0; /* note #2 */
+  overflow: hidden;
 }
 
 #__next {
-  min-height: 100vh;
-  height: 100vh;
+  height: 100%;
 }
 
 .calendar-optimal {

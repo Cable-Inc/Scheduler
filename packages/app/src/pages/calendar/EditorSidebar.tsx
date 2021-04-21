@@ -8,7 +8,7 @@ interface EditorSidebarProps {
 
 const EditorSidebar: React.FC<EditorSidebarProps> = ({ onSave, username }) => {
   return (
-    <div className="h-full mx-4 my-4">
+    <div className="p-4">
       <TitleSection text="Enter Your Schedule" />
       <ContentSection text="Drag on the calendar when you are available for meetings. Click save when you've finished!" />
       <TitleSection text={`You are editing ${username}'s Schedule`} />
