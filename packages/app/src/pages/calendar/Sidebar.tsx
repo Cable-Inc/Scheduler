@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onNameSubmit, id }) => {
   );
 
   return (
-    <div className="h-full mx-4 my-4">
+    <div className="p-4 pb-16">
       <TitleSection text="Welcome to Cable Scheduler!" />
       <ContentSection text="Cable Scheduler makes it easy to schedule an event with your friends or colleagues. No account required!" />
       <TitleSection text="How it Works" />
@@ -66,17 +66,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onNameSubmit, id }) => {
           </Button>
         </div>
       </form>
-      <TitleSection text="Listers" />
+      <TitleSection text="Contributors" />
       <ContentSection text="These are all the people who have looked at and added their name to the timetable." />
-      <ul className="list-disc text-white mx-4 pb-6">
+      <div className="text-white pb-6 flex flex-wrap gap-2 justify-center">
         {!loading &&
           data &&
           data.getCalendarContributors.map((user) => (
-            <li className="pb-1 text-white" key={user}>
-              {user}
-            </li>
+            <ContributorBlock key={user} name={user} clickHandler={onNameSubmit} />
           ))}
-      </ul>
+      </div>
     </div>
   );
 };
@@ -85,7 +83,7 @@ interface TitleProps {
   text: string;
 }
 
-const TitleSection: React.FC<TitleProps> = ({ text }) => (
+export const TitleSection: React.FC<TitleProps> = ({ text }) => (
   <div className="text-white font-semibold text-xl pb-4">{text}</div>
 );
 
@@ -93,6 +91,27 @@ interface ContentProps {
   text: string;
 }
 
-const ContentSection: React.FC<ContentProps> = ({ text }) => <div className="text-white font-normal pb-4">{text}</div>;
+export const ContentSection: React.FC<ContentProps> = ({ text }) => (
+  <div className="text-white font-normal pb-4">{text}</div>
+);
+
+interface ContributorBlockProps {
+  name: string;
+  clickHandler: (name: string) => void;
+}
+
+const ContributorBlock: React.FC<ContributorBlockProps> = ({ name, clickHandler }) => {
+  return (
+    <Button fullWidth variant="contained" color="primary" onClick={() => clickHandler(name)}>
+      {name}
+    </Button>
+    // <div
+    //   className="w-full bg-blue-500 py-3 text-white rounded shadow text-center font-semibold cursor-pointer"
+    //   onClick={() => clickHandler(name)}
+    // >
+    //   {name}
+    // </div>
+  );
+};
 
 export default Sidebar;

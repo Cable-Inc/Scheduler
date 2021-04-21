@@ -1,17 +1,38 @@
 import React from "react";
 import Link from "next/link";
-import def from "url";
+import MenuIcon from "@material-ui/icons/Menu";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  showMenu?: boolean;
+  handleMenuClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ handleMenuClick, showMenu }) => {
   return (
-    <nav className="p-6 z-50 bg-gray-700 shadow-lg opacity-90 flex justify-between w-full">
-      <div>
-        <NavigationLink text="Cable Scheduler" href="/" sameTab />
-      </div>
-      <div>
-        <NavigationLink text="Create New Schedule" href="/calendar" sameTab />
-      </div>
-    </nav>
+    <>
+      <nav className="p-6 z-50 bg-gray-700 shadow-lg opacity-90 justify-between w-full hidden lg:flex">
+        <div>
+          <NavigationLink text="Cable Scheduler" href="/" sameTab />
+        </div>
+        <div>
+          <NavigationLink text="Create New Schedule" href="/calendar" sameTab />
+        </div>
+      </nav>
+      <nav className="p-6 z-50 bg-gray-700 shadow-lg opacity-90 justify-between w-full flex lg:hidden">
+        <div>
+          <div className={`${showMenu ? "block" : "hidden"}`}>
+            <div className="cursor-pointer" onClick={handleMenuClick}>
+              <MenuIcon className="text-white" />
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="flex gap-x-8">
+            <NavigationLink text="Create New Schedule" href="/calendar" sameTab />
+          </div>
+        </div>
+      </nav>
+    </>
   );
 };
 

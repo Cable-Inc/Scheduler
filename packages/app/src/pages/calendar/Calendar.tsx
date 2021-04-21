@@ -1,5 +1,5 @@
 import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
-import { CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import { Fullscreen } from "@material-ui/icons";
 import { startOfWeek, setMinutes, setHours, setDay, getDay, getHours, getMinutes, compareAsc } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
@@ -19,6 +19,8 @@ import { UpdateCalendarUser, UpdateCalendarUserVariables } from "../../types/Upd
 import EditorSidebar from "./EditorSidebar";
 import Sidebar from "./Sidebar";
 import CalendarTooltip from "./CalendarTooltip";
+import MobileInfoMenu from "./MobileInfoMenu";
+import MobileAddScheduleModal from "./MobileAddScheduleModal";
 
 interface CalendarProps {
   id: string;
@@ -69,12 +71,11 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
     },
   ] = useUndo<ScheduleType>([]);
 
-  const [shouldDisable, setShouldDisable] = useState(true);
+  const [bufferDisabled, setBufferDisabled] = useState(true);
 
   useEffect(() => {
     if (appState === "EDITOR" && data) {
       const user = data.newCalendarUser.users.find((u) => u.username === username);
-      console.log("IN EDITOR MODE");
       if (user) {
         const transformed = user.times.map((range) => [new Date(range.start), new Date(range.end)] as [Date, Date]);
         const adjusted = transformed
@@ -102,7 +103,7 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
               ] as [Date, Date]
           )
           .sort(([start], [end]) => compareAsc(start, end));
-        setShouldDisable(false);
+        setBufferDisabled(false);
         setSchedule(adjusted);
       }
     }
@@ -113,7 +114,7 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
       const transformed = optimalSchedule.getOptimalTime.map(
         (range) => [new Date(range.start), new Date(range.end)] as [Date, Date]
       );
-      console.log(transformed);
+
       const adjusted = transformed
         .map(
           (range) =>
@@ -139,12 +140,24 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
             ] as [Date, Date]
         )
         .sort(([start], [end]) => compareAsc(start, end));
-      console.log(adjusted);
+
       setSchedule(adjusted);
-      setShouldDisable(true);
-      console.log(scheduleState);
+
+      setBufferDisabled(true);
     }
   }, [optimalSchedule, appState]);
+
+  const [shouldDisable, setShouldDisable] = useState(true);
+
+  useEffect(() => {
+    if (appState === "EDITOR") {
+      return setShouldDisable(false);
+    }
+    return;
+    if (appState === "INTRO") {
+      return setShouldDisable(true);
+    }
+  }, [bufferDisabled]);
 
   useEffect(() => {
     const slots = Array.from(document.getElementsByClassName("react-draggable"));
@@ -159,26 +172,18 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
     });
   });
 
-  const [height, setHeight] = useState(40);
-
-  const style = {
-    "--cell-height": `${height}px`,
-    "--cell-width": `${22}px`,
-    height: "85%",
-  } as React.CSSProperties;
-
   const handleIntroToEditor = async (name: string) => {
     if (!id || !name || !(typeof id === "string")) {
       return;
     }
-    setAppState("EDITOR");
-    setUsername(name);
     await createNewCalendarUser({
       variables: {
         id,
         username: name,
       },
     });
+    setUsername(name);
+    setAppState("EDITOR");
   };
 
   const timeFormat = (date: Date) => {
@@ -206,9 +211,22 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
       update: async () => {
         await refetchOptimal();
         setAppState("INTRO");
+        setShouldDisable(true);
       },
     });
   };
+
+  const [height, setHeight] = useState(40);
+
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showMobileModal, setShowMobileModal] = useState(false);
+
+  const style = {
+    "--cell-height": `${height}px`,
+    "--cell-width": `${22}px`,
+    height: "100%",
+    paddingBottom: "9.5rem",
+  } as React.CSSProperties;
 
   if (loading) {
     return (
@@ -219,13 +237,64 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
   }
   //${shouldDisable ? "pointer-events-none" : ""}
   return (
-    <div className="h-full overflow-visible">
-      <Header />
-      {isOnClient && (
-        <div className="flex flex-row h-full overflow-visible">
-          <div className={`w-5/6 h-full `}>
-            <div className="w-full p-6 text-white font-bold text-2xl text-center bg-[#512da8]">
-              {appState === "EDITOR" ? "Editing" : "Optimal Schedule"}
+    <div className="h-full">
+      <div className="hidden lg:block h-full">
+        <Header />
+        {isOnClient && (
+          <div className="flex flex-row h-full">
+            <div className={`w-5/6 h-full `}>
+              <div className="w-full p-6 text-white font-bold text-2xl text-center bg-[#512da8]">
+                {appState === "EDITOR" ? `Editing ${username}` : "Optimal Schedule"}
+              </div>
+              <div style={style}>
+                <TimeGridScheduler
+                  style={{ width: "100%", height: "100%" }}
+                  classes={defaultClasses}
+                  originDate={new Date("2019-03-04")}
+                  schedule={scheduleState.present}
+                  onChange={setSchedule}
+                  visualGridVerticalPrecision={60}
+                  eventRootComponent={CalendarTooltip}
+                  // disabled={shouldDisable}
+                />
+              </div>
+            </div>
+            <div className="w-1/6 overflow-y-auto" style={{ minWidth: "260px" }}>
+              {appState === "INTRO" && <Sidebar id={id} onNameSubmit={handleIntroToEditor} />}
+              {appState === "EDITOR" && <EditorSidebar username={username} onSave={handleSaveTimetable} />}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="block lg:hidden h-full">
+        <Header
+          showMenu
+          handleMenuClick={() => {
+            setShowMobileMenu((p) => !p);
+          }}
+        />
+        <MobileInfoMenu
+          isOpen={showMobileMenu}
+          setOpen={setShowMobileMenu}
+          id={id}
+          switchToUser={handleIntroToEditor}
+        />
+        <MobileAddScheduleModal isOpen={showMobileModal} setIsOpen={setShowMobileModal} submit={handleIntroToEditor} />
+        {isOnClient && (
+          <>
+            <div className="w-full p-4 text-white font-bold text-xl flex justify-between bg-[#512da8]">
+              <div>{appState === "EDITOR" ? `Editing ${username}` : "Optimal Schedule"}</div>
+              <div>
+                {appState === "EDITOR" ? (
+                  <Button variant="outlined" onClick={handleSaveTimetable}>
+                    Save
+                  </Button>
+                ) : (
+                  <Button variant="outlined" onClick={() => setShowMobileModal(true)}>
+                    Add your Schedule
+                  </Button>
+                )}
+              </div>
             </div>
             <div style={style}>
               <TimeGridScheduler
@@ -236,15 +305,12 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
                 onChange={setSchedule}
                 visualGridVerticalPrecision={60}
                 eventRootComponent={CalendarTooltip}
+                // disabled={shouldDisable}
               />
             </div>
-          </div>
-          <div className="w-1/6" style={{ minWidth: "260px" }}>
-            {appState === "INTRO" && <Sidebar id={id} onNameSubmit={handleIntroToEditor} />}
-            {appState === "EDITOR" && <EditorSidebar username={username} onSave={handleSaveTimetable} />}
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
