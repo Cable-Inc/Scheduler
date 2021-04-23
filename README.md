@@ -1,6 +1,6 @@
 # Cable Scheduler
 
-Use `lerna create xyz` to create a new package
+https://cable-scheduler.web.app/calendar
 
 # firebase
 
