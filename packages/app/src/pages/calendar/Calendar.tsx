@@ -2,7 +2,7 @@ import { useMutation, useLazyQuery, useQuery } from "@apollo/client";
 import { Button, CircularProgress } from "@material-ui/core";
 import { Fullscreen } from "@material-ui/icons";
 import { startOfWeek, setMinutes, setHours, setDay, getDay, getHours, getMinutes, compareAsc } from "date-fns";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { TimeGridScheduler, classes as defaultClasses } from "react-weekly-schedule";
 import { ScheduleType } from "react-weekly-schedule/src/types";
 import "react-weekly-schedule/index.css";
@@ -70,6 +70,13 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
       canRedo: canRedoSchedule,
     },
   ] = useUndo<ScheduleType>([]);
+
+  const preSetSchedule = (e: ScheduleType) => {
+    if (appState === "EDITOR") {
+      return setSchedule(e);
+    }
+    console.log("Skipping update");
+  };
 
   const [bufferDisabled, setBufferDisabled] = useState(true);
 
@@ -221,6 +228,19 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showMobileModal, setShowMobileModal] = useState(false);
 
+  const calendarRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const element = calendarRef.current?.firstElementChild?.firstElementChild;
+    console.log(element);
+    if (!element) return;
+    if (appState === "EDITOR") {
+      element?.classList.remove("pointer-events-none");
+    } else {
+      element?.classList.add("pointer-events-none");
+    }
+  }, [appState, calendarRef, scheduleState]);
+
   const style = {
     "--cell-height": `${height}px`,
     "--cell-width": `${22}px`,
@@ -235,6 +255,7 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
       </Fullscreen>
     );
   }
+
   //${shouldDisable ? "pointer-events-none" : ""}
   return (
     <div className="h-full">
@@ -246,13 +267,13 @@ const Calendar: React.FC<CalendarProps> = ({ id }) => {
               <div className="w-full p-6 text-white font-bold text-2xl text-center bg-[#512da8]">
                 {appState === "EDITOR" ? `Editing ${username}` : "Optimal Schedule"}
               </div>
-              <div style={style}>
+              <div style={style} ref={calendarRef}>
                 <TimeGridScheduler
                   style={{ width: "100%", height: "100%" }}
                   classes={defaultClasses}
                   originDate={new Date("2019-03-04")}
                   schedule={scheduleState.present}
-                  onChange={setSchedule}
+                  onChange={(schedule) => preSetSchedule(schedule)}
                   visualGridVerticalPrecision={60}
                   eventRootComponent={CalendarTooltip}
                   // disabled={shouldDisable}
